@@ -16,6 +16,74 @@ To write a PYTHON program for socket for HTTP for web page upload and download
 6.Stop the program
 <BR>
 ## Program 
+```
+import socket
+import webbrowser
+import os
+
+def send_request(host, port, request):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        s.sendall(request.encode())
+
+        response = b""
+
+        while True:
+            data = s.recv(4096)
+
+            if not data:
+                break
+
+            response += data
+
+    return response.decode(errors="ignore")
+
+def download_and_open(host, port):
+
+    request = f"GET / HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
+
+    response = send_request(host, port, request)
+
+    html = response.split("\r\n\r\n",1)[1]
+
+    filename = "page.html"
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    print("HTML page saved.")
+
+    path = os.path.abspath(filename)
+
+    webbrowser.open("file://" + path)
+
+    print("Opened in browser.")
+
+if __name__ == "__main__":
+
+    host = "example.com"
+    port = 80
+
+    download_and_open(host, port)
+```
+```
+html
+210
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+
+0
+
+
+
+
+```
 ## OUTPUT
+
+<img width="1920" height="1015" alt="{D19D08BB-369E-4917-9BD1-50BEDFE48E10}" src="https://github.com/user-attachments/assets/ced0c83f-dd79-44d2-9765-57c14747a375" />
+
+<img width="1920" height="1013" alt="{68FF93B0-0207-4698-8E50-2E156E76BDB8}" src="https://github.com/user-attachments/assets/51148a7d-df47-4190-9cbb-d686dc5a9561" />
+
 ## Result
 Thus the socket for HTTP for web page upload and download created and Executed
